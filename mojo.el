@@ -1,5 +1,5 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-;; 2009-11-21 19:23:18
+;; 2009-11-21 22:23:20
 (defconst mojo-version "0.9.2")
 
 (require 'json)
@@ -116,6 +116,11 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;; CHANGELOG
 ;; =========
+;; 
+;; sjs 2009-11-21
+;; v 0.9.3 (one more bug fix for today)
+;; 
+;;       - Don't pass -d switch to commands that don't accept it.
 ;; 
 ;; sjs 2009-11-21
 ;; v 0.9.2 (bug fixes)
@@ -244,39 +249,39 @@ NAME is the name of the scene."
 (defun mojo-install ()
   "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator needs to be running."
   (interactive)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-read-package-filename))))
+  (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-read-package-filename))))
   (mojo-invalidate-app-cache))
 
 ;;* interactive 
 (defun mojo-list ()
   "List all installed packages."
   (interactive)
-  (mojo-cmd "palm-install" (list "--list")))
+  (mojo-cmd-with-target "palm-install" (list "--list")))
 
 ;;* interactive 
 (defun mojo-delete ()
   "Remove the current application using `MOJO-APP-ID'."
   (interactive)
-  (mojo-cmd "palm-install" (list "-r" (mojo-read-app-id)))
+  (mojo-cmd-with-target "palm-install" (list "-r" (mojo-read-app-id)))
   (mojo-invalidate-app-cache))
 
 ;;* interactive 
 (defun mojo-launch ()
   "Launch the current application in an emulator."
   (interactive)
-  (mojo-cmd "palm-launch" (list (mojo-read-app-id))))
+  (mojo-cmd-with-target "palm-launch" (list (mojo-read-app-id))))
 
 ;;* interactive 
 (defun mojo-close ()
   "Close launched application."
   (interactive)
-  (mojo-cmd "palm-launch" (list "-c" (mojo-read-app-id))))
+  (mojo-cmd-with-target "palm-launch" (list "-c" (mojo-read-app-id))))
 
 ;;* launch interactive
 (defun mojo-inspect ()
   "Run the DOM inspector on the current application."
   (interactive)
-  (mojo-cmd "palm-launch" (list "-i" (mojo-read-app-id))))
+  (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-read-app-id))))
 
 ;;* emulator interactive
 (defun mojo-hard-reset ()
@@ -294,16 +299,16 @@ NAME is the name of the scene."
   "Package, install, and launch the current application for inspection."
   (interactive)
   (mojo-package)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-package-filename))))
-  (mojo-cmd "palm-launch" (list "-i" (mojo-app-id))))
+  (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
+  (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-app-id))))
 
 ;;* interactive 
 (defun mojo-package-install-and-launch ()
   "Package, install, and launch the current application."
   (interactive)
   (mojo-package)
-  (mojo-cmd "palm-install" (list (expand-file-name (mojo-package-filename))))
-  (mojo-cmd "palm-launch" (list (mojo-app-id))))
+  (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-package-filename))))
+  (mojo-cmd-with-target "palm-launch" (list (mojo-app-id))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -543,7 +548,7 @@ Sets `*mojo-target*' to \"tcp\"."
     (t (concat mojo-sdk-directory "/bin/" cmd))))
 
 ;;* lowlevel cmd
-(defun mojo-cmd (cmd args &optional target)
+(defun mojo-cmd (cmd args)
   "General interface for running mojo-sdk commands.
 
 CMD is the name of the command (without path or extension) to execute.
@@ -551,10 +556,20 @@ CMD is the name of the command (without path or extension) to execute.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
   (let ((cmd (mojo-path-to-cmd cmd))
-	(args (concat "-d " (or target *mojo-target*) " "
-		       (string-join " " args))))
+	(args (string-join " " args)))
     (if mojo-debug (message "running %s with args %s " cmd args))
     (shell-command (concat cmd " " args))))
+
+;;* lowlevel cmd
+(defun mojo-cmd-with-target (cmd args &optional target)
+  "General interface for running mojo-sdk commands that accept a target device.
+
+CMD is the name of the command (without path or extension) to
+ execute.  Automagically shell quoted.  ARGS is a list of all
+ arguments to the command.  These arguments are NOT shell quoted.
+ TARGET specifies the target device, \"tcp\" or \"usb\"."
+  (let ((args (cons "-d" (cons (or target *mojo-target*) args))))
+    (mojo-cmd cmd args)))
 
 ;;* lowlevel cmd
 (defun mojo-cmd-to-string (cmd args &optional target)

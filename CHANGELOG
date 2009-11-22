@@ -2,6 +2,11 @@ CHANGELOG
 =========
 
 sjs 2009-11-21
+v 0.9.3 (one more bug fix for today)
+
+      - Don't pass -d switch to commands that don't accept it.
+
+sjs 2009-11-21
 v 0.9.2 (bug fixes)
 
       - reading json files no longer messes up your buffer history.
