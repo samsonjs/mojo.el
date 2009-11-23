@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+sjs 2009-11-22
+v 0.9.4 launch emulator if needed
+
+      - Commands that use the emulator launch it if necessary and wait till
+        it is fully booted before running commands.
+
 sjs 2009-11-21
 v 0.9.3 (one more bug fix for today)
 
