@@ -1,0 +1,6 @@
+{
+    "title":    "mojo.el",
+    "filename": "../mojo.el",
+    "version": "0.9.4",
+    "template": "template.el"
+}
