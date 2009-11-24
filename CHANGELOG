@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+sjs 2009-11-24
+v 0.9.5 (bug fix)
+
+      - Now that I have a real Palm Pre device I was able to test device support.
+        Turns out I couldn't target the device because mojo-target-device was not
+        interactive.  Whoops.
+
 sjs 2009-11-22
 v 0.9.4 launch emulator if needed
 

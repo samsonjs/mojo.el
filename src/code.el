@@ -158,6 +158,23 @@ NAME is the name of the scene."
   (mojo-cmd-with-target "palm-launch" (list (mojo-app-id))))
 
 
+;;* interactive
+(defun mojo-target-device ()
+  "Specify that Mojo commands should target a real device.
+
+Sets `*mojo-target*' to \"usb\"."
+  (interactive)
+  (setq *mojo-target* "usb"))
+
+;;* interactive
+(defun mojo-target-emulator ()
+  "Specify that Mojo commands should target a real device.
+
+Sets `*mojo-target*' to \"tcp\"."
+  (interactive)
+  (setq *mojo-target* "tcp"))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some support functions that grok the basics of a Mojo project. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -376,18 +393,6 @@ URL is the luna url, and DATA is the data."
 (defvar *mojo-target* "tcp"
   "Used to specify the target platform, \"usb\" for the device
   and \"tcp\" for the emulator.  Deaults to \"tcp\".")
-
-(defun mojo-target-device ()
-  "Specify that Mojo commands should target a real device.
-
-Sets `*mojo-target*' to \"usb\"."
-  (setq *mojo-target* "usb"))
-
-(defun mojo-target-emulator ()
-  "Specify that Mojo commands should target a real device.
-
-Sets `*mojo-target*' to \"tcp\"."
-  (setq *mojo-target* "tcp"))
 
 (defun mojo-emulator-running-p ()
   "Determine if the webOS emulator is running or not.
