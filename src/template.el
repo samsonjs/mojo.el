@@ -11,7 +11,7 @@
 ;;          Sami Samhuri <sami.samhuri@gmail.com>
 ;;
 ;; Latest version is available on github:
-;;     http://github.com/samsonjs/config/blob/master/emacs.d/mojo.el
+;;     http://github.com/samsonjs/mojo.el
 ;;
 ;; With sufficient interest mojo.el will get its own repo.
 

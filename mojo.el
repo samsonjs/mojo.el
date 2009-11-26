@@ -1,5 +1,5 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-;; 2009-11-25 18:27:51
+;; 2009-11-26 14:12:59
 (defconst mojo-version "0.9.5")
 
 (require 'json)
@@ -11,7 +11,7 @@
 ;;          Sami Samhuri <sami.samhuri@gmail.com>
 ;;
 ;; Latest version is available on github:
-;;     http://github.com/samsonjs/config/blob/master/emacs.d/mojo.el
+;;     http://github.com/samsonjs/mojo.el
 ;;
 ;; With sufficient interest mojo.el will get its own repo.
 
