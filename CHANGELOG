@@ -4,15 +4,16 @@ CHANGELOG
 sjs 2009-11-24
 v 0.9.5 (bug fix)
 
-      - Now that I have a real Palm Pre device I was able to test device support.
-        Turns out I couldn't target the device because mojo-target-device was not
-        interactive.  Whoops.
+      - Now that I have a real Palm Pre device I was able to test
+        device support.  Turns out I couldn't (easily) target the
+        device because mojo-target-device was not interactive.
+        Whoops.
 
 sjs 2009-11-22
 v 0.9.4 launch emulator if needed
 
-      - Commands that use the emulator launch it if necessary and wait till
-        it is fully booted before running commands.
+      - Commands that use the emulator launch it if necessary and wait
+        till it is fully booted before running commands.
 
 sjs 2009-11-21
 v 0.9.3 (one more bug fix for today)
@@ -31,39 +32,39 @@ v 0.9.1
 
       - Added mojo-package-install-and-launch.
 
-      - New variable for specifying whether commands target the
-        device or emulator, *mojo-target*.  Set it to 'usb' for a
-        real device and 'tcp' for the emulator.  Defaults to 'tcp'.
-        To set the default target you can use the convenience
-        functions mojo-target-device and mojo-target-emulator.
+      - New variable for specifying whether commands target the device
+        or emulator, *mojo-target*.  Set it to 'usb' for a real device
+        and 'tcp' for the emulator.  Defaults to 'tcp'.  To set the
+        default target you can use the convenience functions
+        mojo-target-device and mojo-target-emulator.
 
 sjs 2009-11-20
 v 0.9
 
-      - Automatically find Mojo project root by searching upwards
-        for appinfo.json.
+      - Automatically find Mojo project root by searching upwards for
+        appinfo.json.
 
-      - Added command for generating new scenes,
-        mojo-generate-scene.
+      - Added command for generating new scenes, mojo-generate-scene.
 
       - mojo-package now operates only on the current project.
 
       - Parse appinfo.json to get version, used for installing &
         launching with less interaction.
 
-      - mojo-install, mojo-launch, mojo-inspect, and mojo-delete
-        still read in arguments but have the current project/app as
-        the default values.
+      - mojo-install, mojo-launch, mojo-inspect, and mojo-delete still
+        read in arguments but have the current project/app as the
+        default values.
 
       - New convenience method: mojo-package-install-and-inspect
+
         This function only operates on the active app and does not
         read in any input.
 
       - Remembered filenames and app ids are cleared when the Mojo
         project root changes. (DWIM)
 
-      - Parse output of `palm-install --list` for app id
-        completion.  App id completion was ported from cheat.el.
+      - Parse output of `palm-install --list` for app id completion.
+        App id completion was ported from cheat.el.
 
 v 0.2 - Fixed some minor bugs
 v 0.1 - Initial release

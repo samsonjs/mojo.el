@@ -1,4 +1,4 @@
-;;; #{app['filename']} --- Interactive functions to aid the development of webOS apps
+;;; #{app['basename']} --- Interactive functions to aid the development of webOS apps
 ;; #{timestamp}
 (defconst mojo-version "#{app['version']}")
 
