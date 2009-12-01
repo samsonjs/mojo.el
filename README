@@ -9,8 +9,10 @@ Authors: Jonathan Arkell <jonnay@jonnay.net>
 
 Overview
 ========
-Mojo.el is an Emacs package that provides interactive functions to aid the
-development of webOS apps.
+
+Mojo.el is an Emacs package that provides interactive functions to aid
+the development of webOS apps.  There is a minor mode that can be
+toggled with the command `mojo-mode'.
 
 Latest version is available on github:
     http://github.com/samsonjs/mojo.el
@@ -32,20 +34,14 @@ Installation
    mojo-project-directory, mojo-sdk-directory and mojo-build-directory
    (Use M-x customize-group RET mojo RET)
 
-(optional)
-
-4. I recommend that you define a few keyboard shortcuts in your Emacs init
-   file. Maybe something like this:
-
-    (global-set-key [f2] mojo-generate-scene)
-    (global-set-key [f3] mojo-emulate)
-    (global-set-key [f4] mojo-package)
-    (global-set-key [f5] mojo-package-install-and-inspect)
-
 
 Commands
 ========
+
 The complete command list:
+
+  Code generation
+  ---------------
 
  mojo-generate
    Generate a new Mojo application in the mojo-project-directory.
@@ -53,6 +49,10 @@ The complete command list:
  mojo-generate-scene
    Generate a new Mojo scene for the application found by mojo-root.
    (a.k.a. the current application)
+
+
+  Packaging and device/emulator interactions
+  ------------------------------------------
 
  mojo-emulate
    Launch the palm emulator.
@@ -71,13 +71,15 @@ The complete command list:
    Remove the specified application. (defaults to current app id)
 
  mojo-launch
-   Launch the specified application in the emulator. (defaults to current app id)
+   Launch the specified application in the emulator. (defaults to
+   current app id)
 
  mojo-close
    Close specified application. (defaults to current app id)
 
  mojo-inspect
-   Run the dom inspector on the specified application. (defaults to current app id)
+   Run the dom inspector on the specified application. (defaults to
+   current app id)
 
  mojo-hard-reset
    Perform a hard reset, clearing all data.
@@ -94,10 +96,43 @@ The complete command list:
  mojo-target-emulator
    Set the target device to the emulator.
 
+ mojo-toggle-target
+   Automatically change the target device from 'usb' to 'tcp' and vice
+   versa.
+
+
+  Quickly switch buffers
+  ----------------------
+
+ mojo-switch-to-assistant
+   Switch to the corresponding assistant from any view file.
+
+ mojo-switch-to-view
+   Switch to the main view from an assistant.
+
+ mojo-switch-to-next-view
+   Switch to the next view file, alphabetically.  Wraps around at the
+   end.
+
+ mojo-switch-to-appinfo
+   Switch to the appinfo.json file.
+
+ mojo-switch-to-sources
+   Switch to the sources.json file.
+
+ mojo-switch-to-index
+   Switch to the root index.html file.
+
+ mojo-switch-to-stylesheet
+   Switch to the main stylesheet.
+
+
 
 Customizations
 ==============
+
 Customizable options:
+
  mojo-sdk-directory
    Path to where the mojo SDK is. (default ok for windows and mac os x)
    default = (case system-type

@@ -1,4 +1,8 @@
 TODO
 ====
 
-* Jump to related files: to assistant from view and vice versa
+* Detect when inside a mojo project and load mojo-mode
+* turn on and off debugging & logging
+* switch to last visited view
+* inject Mojo.Ext
+* convert assistants to inherit from SceneAssistantBase
