@@ -12,7 +12,12 @@ Overview
 
 Mojo.el is an Emacs package that provides interactive functions to aid
 the development of webOS apps.  There is a minor mode that can be
-toggled with the command `mojo-mode'.
+toggled with the command `mojo-mode', or enabled automatically by
+setting up mode hooks in your emacs config.  There's a convenience
+function called mojo-setup-mode-hooks that takes one or more hook
+variable names and adds mojo-maybe-enable-minor-mode to each hook.
+mojo-maybe-enable-minor-mode enables mojo-mode for files under a Mojo
+project root.
 
 Latest version is available on github:
     http://github.com/samsonjs/mojo.el
@@ -25,107 +30,13 @@ And usually also on Emacs Wiki:
 Installation
 ============
 
-1. Put json.el and mojo.el somewhere in your load-path.
-   (Use M-x show-variable RET load-path to see what your load path is.)
-
-2. Add this to your Emacs init file: (require 'mojo)
-
-3. Make sure you customize the variables:
-   mojo-project-directory, mojo-sdk-directory and mojo-build-directory
-   (Use M-x customize-group RET mojo RET)
+See INSTALL or mojo.el itself for instructions.
 
 
 Commands
 ========
 
-The complete command list:
-
-  Code generation
-  ---------------
-
- mojo-generate
-   Generate a new Mojo application in the mojo-project-directory.
-   
- mojo-generate-scene
-   Generate a new Mojo scene for the application found by mojo-root.
-   (a.k.a. the current application)
-
-
-  Packaging and device/emulator interactions
-  ------------------------------------------
-
- mojo-emulate
-   Launch the palm emulator.
-
- mojo-package
-   Package the specified application (defaults to current app id).
-
- mojo-install
-   Install the specified package (defaults to current app id).
-   The emulator needs to be running.
-
- mojo-list
-   List all installed packages.
-
- mojo-delete
-   Remove the specified application. (defaults to current app id)
-
- mojo-launch
-   Launch the specified application in the emulator. (defaults to
-   current app id)
-
- mojo-close
-   Close specified application. (defaults to current app id)
-
- mojo-inspect
-   Run the dom inspector on the specified application. (defaults to
-   current app id)
-
- mojo-hard-reset
-   Perform a hard reset, clearing all data.
-
- mojo-package-install-and-launch
-   Package, install, and launch the current app.
-
- mojo-package-install-and-inspect
-   Package, install, and launch the current app for inspection.
-
- mojo-target-device
-   Set the target device to USB.
-
- mojo-target-emulator
-   Set the target device to the emulator.
-
- mojo-toggle-target
-   Automatically change the target device from 'usb' to 'tcp' and vice
-   versa.
-
-
-  Quickly switch buffers
-  ----------------------
-
- mojo-switch-to-assistant
-   Switch to the corresponding assistant from any view file.
-
- mojo-switch-to-view
-   Switch to the main view from an assistant.
-
- mojo-switch-to-next-view
-   Switch to the next view file, alphabetically.  Wraps around at the
-   end.
-
- mojo-switch-to-appinfo
-   Switch to the appinfo.json file.
-
- mojo-switch-to-sources
-   Switch to the sources.json file.
-
- mojo-switch-to-index
-   Switch to the root index.html file.
-
- mojo-switch-to-stylesheet
-   Switch to the main stylesheet.
-
+See COMMANDS or mojo.el itself.
 
 
 Customizations

@@ -12,13 +12,11 @@ class Assembler
   class LazyHash < Hash
     alias_method :original_get, :[]
     def [](key)
-      if value = original_get(key)
-        if value.respond_to?(:call)
-          self[key] = value.call
-          original_get(key)
-        else
-          value
-        end
+      value = original_get(key)
+      if value.respond_to?(:call)
+        self[key] = value.call
+      else
+        value
       end
     end
   end
@@ -45,9 +43,11 @@ class Assembler
 
   def initialize
     @app = JSON.parse(File.read('info.json'))
-    @files = Dir['*'].select {|f| File.file?(f)}.
+    files = Dir['*'] + Dir['../*']
+    @files = files.select {|f| File.file?(f)}.
                       inject(LazyHash.new) {|h,f|
-                        h[f] = lambda { read_file(f) };h
+                        k = f.sub(/^..\//, '')
+                        h[k] = lambda { read_file(f) };h
                       }
     @delegate = AssemblerDelegate.new(@app, @files)
   end

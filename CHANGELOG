@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+sjs 2009-12-03
+v 0.9.7 (hooks)
+
+      - Added mojo-setup-mode-hooks which adds
+        mojo-maybe-enable-minor-mode to the specified mode hooks.
+        When the hooked modes are activated on files under a Mojo
+        project root also activate mojo-mode.
+
+sjs 2009-12-01
+v 0.9.6 (minor mode)
+
+      - Created mojo-mode, a minor mode with keybindings.
+
+      - Prefixed *all* functions with "mojo-".
+
 sjs 2009-11-24
 v 0.9.5 (bug fix)
 

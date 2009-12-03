@@ -1,0 +1,23 @@
+Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
+             2009 Sami Samhuri
+
+Authors: Jonathan Arkell <jonnay@jonnay.net>
+         Sami Samhuri <sami.samhuri@gmail.com>
+
+Latest version is available on github:
+    http://github.com/samsonjs/mojo.el
+
+This file is not part of GNU Emacs.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation version 2.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+For a copy of the GNU General Public License, search the Internet,
+or write to the Free Software Foundation, Inc., 59 Temple Place,
+Suite 330, Boston, MA 02111-1307 USA

@@ -1,0 +1,18 @@
+ 
+ 1. Put json.el and mojo.el somewhere in your load-path.
+    (Use M-x show-variable RET load-path to see what your load path is.)
+ 
+ 2. Add this to your Emacs init file: (require 'mojo)
+ 
+ 3. Enable mojo-mode for modes that you use for webOS, e.g.:
+ 
+ (mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook
+                        'espresso-mode-hook 'html-mode-hook)
+ 
+    Note that this does not simply enable mojo-mode for these types
+    wholesale, but instead only enables mojo-mode when it finds that
+    the file is also under a Mojo project root (using mojo-project-p).
+ 
+ 4. Make sure you customize the variables:
+    mojo-project-directory, mojo-sdk-directory and mojo-build-directory
+    (Use M-x customize-group RET mojo RET)

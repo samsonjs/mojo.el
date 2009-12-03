@@ -1,34 +1,33 @@
 ;;; mojo.el --- Interactive functions to aid the development of webOS apps
-;; 2009-12-01 08:29:25
-(defconst mojo-version "0.9.6")
+;; 2009-12-03 13:54:30
+(defconst mojo-version "0.9.7")
 
 (require 'json)
 
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;;              2009 Sami Samhuri
-;;
+;; 
 ;; Authors: Jonathan Arkell <jonnay@jonnay.net>
 ;;          Sami Samhuri <sami.samhuri@gmail.com>
-;;
+;; 
 ;; Latest version is available on github:
 ;;     http://github.com/samsonjs/mojo.el
-;;
-;; With sufficient interest mojo.el will get its own repo.
-
+;; 
 ;; This file is not part of GNU Emacs.
-
+;; 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation version 2.
-
+;; 
 ;; This program is distributed in the hope that it will be useful, but
 ;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-
+;; 
 ;; For a copy of the GNU General Public License, search the Internet,
 ;; or write to the Free Software Foundation, Inc., 59 Temple Place,
 ;; Suite 330, Boston, MA 02111-1307 USA
+
 
 ;;; Commentary:
 (defgroup mojo '()
@@ -36,64 +35,120 @@
 
 This package is in early beta.  I am open to any contributions or
 ideas.  Send me a pull request on github if you hack on mojo.el.")
-  
+
 ;;; Installation:
-;; 
-;; 1. Put json.el and mojo.el somewhere in your load-path.
-;;    (Use M-x show-variable RET load-path to see what your load path is.)
-;; 
-;; 2. Add this to your Emacs init file: (require 'mojo)
-;; 
-;; 3. Make sure you customize the variables:
-;;    mojo-project-directory, mojo-sdk-directory and mojo-build-directory
-;;    (Use M-x customize-group RET mojo RET)
-;; 
-;; (optional)
-;; 
-;; 4. I recommend that you define a few keyboard shortcuts in your Emacs init
-;;    file. Maybe something like this:
-;; 
-;;     (global-set-key [f2] mojo-generate-scene)
-;;     (global-set-key [f3] mojo-emulate)
-;;     (global-set-key [f4] mojo-package)
-;;     (global-set-key [f5] mojo-package-install-and-inspect)
-;; 
+;;
+;;  
+;;  1. Put json.el and mojo.el somewhere in your load-path.
+;;     (Use M-x show-variable RET load-path to see what your load path is.)
+;;  
+;;  2. Add this to your Emacs init file: (require 'mojo)
+;;  
+;;  3. Enable mojo-mode for modes that you use for webOS, e.g.:
+;;  
+;;  (mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook
+;;                         'espresso-mode-hook 'html-mode-hook)
+;;  
+;;     Note that this does not simply enable mojo-mode for these types
+;;     wholesale, but instead only enables mojo-mode when it finds that
+;;     the file is also under a Mojo project root (using mojo-project-p).
+;;  
+;;  4. Make sure you customize the variables:
+;;     mojo-project-directory, mojo-sdk-directory and mojo-build-directory
+;;     (Use M-x customize-group RET mojo RET)
+
+
 
 ;;; Commands:
 ;;
-;; Below are complete command list:
-;;
-;;  `mojo-generate'
-;;    Generate a new Mojo application in the `mojo-project-directory'.
-;;  `mojo-generate-scene'
-;;    Generate a new Mojo scene for the application in `mojo-root'.
-;;  `mojo-emulate'
+;; The complete command list:
+;; 
+;;   Code generation
+;;   ---------------
+;; 
+;;  mojo-generate
+;;    Generate a new Mojo application in the mojo-project-directory.
+;;    
+;;  mojo-generate-scene
+;;    Generate a new Mojo scene for the application found by mojo-root.
+;;    (a.k.a. the current application)
+;; 
+;; 
+;;   Packaging and device/emulator interactions
+;;   ------------------------------------------
+;; 
+;;  mojo-emulate
 ;;    Launch the palm emulator.
-;;  `mojo-package'
-;;    Package the current application.
-;;  `mojo-install'
-;;    Install the specified package for the current application.
+;; 
+;;  mojo-package
+;;    Package the specified application (defaults to current app id).
+;; 
+;;  mojo-install
+;;    Install the specified package (defaults to current app id).
 ;;    The emulator needs to be running.
-;;  `mojo-list'
+;; 
+;;  mojo-list
 ;;    List all installed packages.
-;;  `mojo-delete'
-;;    Remove application named APP-NAME.
-;;  `mojo-launch'
-;;    Launch the current application in an emulator.
-;;  `mojo-close'
-;;    Close launched application.
-;;  `mojo-inspect'
-;;    Run the dom inspector on the current application.
-;;  `mojo-hard-reset'
+;; 
+;;  mojo-delete
+;;    Remove the specified application. (defaults to current app id)
+;; 
+;;  mojo-launch
+;;    Launch the specified application in the emulator. (defaults to
+;;    current app id)
+;; 
+;;  mojo-close
+;;    Close specified application. (defaults to current app id)
+;; 
+;;  mojo-inspect
+;;    Run the dom inspector on the specified application. (defaults to
+;;    current app id)
+;; 
+;;  mojo-hard-reset
 ;;    Perform a hard reset, clearing all data.
-;;  `mojo-package-install-and-launch'
+;; 
+;;  mojo-package-install-and-launch
 ;;    Package, install, and launch the current app.
-;;  `mojo-package-install-and-inspect'
+;; 
+;;  mojo-package-install-and-inspect
 ;;    Package, install, and launch the current app for inspection.
-;;  `mojo-target-device'
-;;    Set the target to a USB device.
-;;  `mojo-target-emulator'
-;;    Set the target to the emulator.
+;; 
+;;  mojo-target-device
+;;    Set the target device to USB.
+;; 
+;;  mojo-target-emulator
+;;    Set the target device to the emulator.
+;; 
+;;  mojo-toggle-target
+;;    Automatically change the target device from 'usb' to 'tcp' and vice
+;;    versa.
+;; 
+;; 
+;;   Quickly switch buffers
+;;   ----------------------
+;; 
+;;  mojo-switch-to-assistant
+;;    Switch to the corresponding assistant from any view file.
+;; 
+;;  mojo-switch-to-view
+;;    Switch to the main view from an assistant.
+;; 
+;;  mojo-switch-to-next-view
+;;    Switch to the next view file, alphabetically.  Wraps around at the
+;;    end.
+;; 
+;;  mojo-switch-to-appinfo
+;;    Switch to the appinfo.json file.
+;; 
+;;  mojo-switch-to-sources
+;;    Switch to the sources.json file.
+;; 
+;;  mojo-switch-to-index
+;;    Switch to the root index.html file.
+;; 
+;;  mojo-switch-to-stylesheet
+;;    Switch to the main stylesheet.
+
 
 ;;; Customizable Options:
 ;;
@@ -114,6 +169,91 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;    Run Mojo in debug mode.  Assumed true while in such an early version.
 ;;    default = t
 
+;; CHANGELOG
+;; =========
+;; 
+;; sjs 2009-12-03
+;; v 0.9.7 (hooks)
+;; 
+;;       - Added mojo-setup-mode-hooks which adds
+;;         mojo-maybe-enable-minor-mode to the specified mode hooks.
+;;         When the hooked modes are activated on files under a Mojo
+;;         project root also activate mojo-mode.
+;; 
+;; sjs 2009-12-01
+;; v 0.9.6 (minor mode)
+;; 
+;;       - Created mojo-mode, a minor mode with keybindings.
+;; 
+;;       - Prefixed *all* functions with "mojo-".
+;; 
+;; sjs 2009-11-24
+;; v 0.9.5 (bug fix)
+;; 
+;;       - Now that I have a real Palm Pre device I was able to test
+;;         device support.  Turns out I couldn't (easily) target the
+;;         device because mojo-target-device was not interactive.
+;;         Whoops.
+;; 
+;; sjs 2009-11-22
+;; v 0.9.4 launch emulator if needed
+;; 
+;;       - Commands that use the emulator launch it if necessary and wait
+;;         till it is fully booted before running commands.
+;; 
+;; sjs 2009-11-21
+;; v 0.9.3 (one more bug fix for today)
+;; 
+;;       - Don't pass -d switch to commands that don't accept it.
+;; 
+;; sjs 2009-11-21
+;; v 0.9.2 (bug fixes)
+;; 
+;;       - reading json files no longer messes up your buffer history.
+;; 
+;;       - app list completion works now (caching bug)
+;; 
+;; sjs 2009-11-21
+;; v 0.9.1
+;; 
+;;       - Added mojo-package-install-and-launch.
+;; 
+;;       - New variable for specifying whether commands target the device
+;;         or emulator, *mojo-target*.  Set it to 'usb' for a real device
+;;         and 'tcp' for the emulator.  Defaults to 'tcp'.  To set the
+;;         default target you can use the convenience functions
+;;         mojo-target-device and mojo-target-emulator.
+;; 
+;; sjs 2009-11-20
+;; v 0.9
+;; 
+;;       - Automatically find Mojo project root by searching upwards for
+;;         appinfo.json.
+;; 
+;;       - Added command for generating new scenes, mojo-generate-scene.
+;; 
+;;       - mojo-package now operates only on the current project.
+;; 
+;;       - Parse appinfo.json to get version, used for installing &
+;;         launching with less interaction.
+;; 
+;;       - mojo-install, mojo-launch, mojo-inspect, and mojo-delete still
+;;         read in arguments but have the current project/app as the
+;;         default values.
+;; 
+;;       - New convenience method: mojo-package-install-and-inspect
+;; 
+;;         This function only operates on the active app and does not
+;;         read in any input.
+;; 
+;;       - Remembered filenames and app ids are cleared when the Mojo
+;;         project root changes. (DWIM)
+;; 
+;;       - Parse output of `palm-install --list` for app id completion.
+;;         App id completion was ported from cheat.el.
+;; 
+;; v 0.2 - Fixed some minor bugs
+;; v 0.1 - Initial release
 
 
 ;;; Code:
@@ -197,7 +337,16 @@ this work."
   "Run Mojo in debug mode.  Assumed true while in such an early version."
   :type 'boolean
   :group 'mojo)
- 
+
+;; Call this from your emacs config file with the modes you want to hook.
+(defun mojo-setup-mode-hooks (&rest hooks)
+  "Add `MOJO-MAYBE-ENABLE-MINOR-MODE' to the specified mode hooks."
+  (dolist (hook hooks)
+    (add-hook hook 'mojo-maybe-enable-minor-mode)))
+
+(defun mojo-maybe-enable-minor-mode ()
+  (when (mojo-project-p)
+    (mojo-mode)))
 
 ;;* interactive generate
 (defun mojo-generate (title directory)
@@ -221,7 +370,7 @@ DIRECTORY is the directory where the files are stored."
 
 NAME is the name of the scene."
   (interactive "sScene Name: \n")
-  (let ((mojo-dir (mojo-root)))
+  (let ((mojo-dir (mojo-root t)))
     (mojo-cmd "palm-generate" (list "-t" "new_scene"
 				    "-p" (format "name=%s" name) mojo-dir))
     (find-file (format "%s/app/assistants/%s-assistant.js" mojo-dir name))
@@ -239,7 +388,7 @@ NAME is the name of the scene."
   "Package the current application into `MOJO-BUILD-DIRECTORY'."
   (interactive)
   (mojo-cmd "palm-package" (list "-o" (expand-file-name mojo-build-directory)
-				 (mojo-root))))
+				 (mojo-root t))))
 
 ;;* interactive 
 (defun mojo-install ()
@@ -359,16 +508,16 @@ vice versa."
 ;; Some support functions that grok the basics of a Mojo project. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun mojo-drop-last-path-component (path)
-  "Get the head of a path by dropping the last component."
+(defun mojo-parent-directory (path)
+  "Get the parent directory, i.e. the head of a path by dropping the last component."
   (if (< (length path) 2)
       path
     (substring path 0 (- (length path)
-			 (length (mojo-last-path-component path))
+			 (length (mojo-filename path))
 			 1)))) ;; subtract one more for the trailing slash
 
-(defun mojo-last-path-component (path)
-  "Get the tail of a path, i.e. the last component."
+(defun mojo-filename (path)
+  "Get the filename from a path, i.e. the last component, or tail."
   (if (< (length path) 2)
       path
     (let ((start -2))
@@ -379,19 +528,20 @@ vice versa."
 (defvar *mojo-last-root* ""
   "Last Mojo root found by `MOJO-ROOT'.")
 
-(defun mojo-root ()
-  "Find a Mojo project's root directory starting with `DEFAULT-DIRECTORY'."
-  (let ((last-component (mojo-last-path-component default-directory))
+(defun mojo-root (&optional ask)
+  "Find a Mojo project's root directory starting with `DEFAULT-DIRECTORY'.
+   If ASK is non-nil and no root was found, ask the user for a directory."
+  (let ((last-component (mojo-filename default-directory))
 	(dir-prefix default-directory))
     ;; remove last path element until we find appinfo.json
     (while (and (not (file-exists-p (concat dir-prefix "/appinfo.json")))
 		(not (< (length dir-prefix) 2)))
-      (setq last-component (mojo-last-path-component dir-prefix))
-      (setq dir-prefix (mojo-drop-last-path-component dir-prefix)))
+      (setq last-component (mojo-filename dir-prefix))
+      (setq dir-prefix (mojo-parent-directory dir-prefix)))
 
     ;; If no Mojo root found, ask for a directory.
-    (if (< (length dir-prefix) 2)
-	(setq dir-prefix (mojo-read-root)))
+    (when (and ask (< (length dir-prefix) 2))
+      (setq dir-prefix (mojo-read-root)))
 
     ;; Invalidate cached values when changing projects.
     (if (or (mojo-blank *mojo-last-root*)
@@ -510,7 +660,7 @@ The app id is stored in *mojo-package-filename* unless it was blank."
 		      (mojo-package-filename)))
          (package (read-file-name (format "Package file (default: %s): " default)
 				  (concat mojo-build-directory "/") default t)))
-    (setq *mojo-package-filename* (mojo-last-path-component package))
+    (setq *mojo-package-filename* (mojo-filename package))
     (expand-file-name package)))
 
 (defun mojo-read-app-id (&optional prompt)
@@ -616,12 +766,18 @@ If the cache file does not exist then it is considered stale."
       (setq path (car (mojo-filter-paths (directory-files stylesheet-dir t)))))
     (find-file path)))
 
+(defun mojo-parent-directory-name (path)
+  (mojo-filename (mojo-parent-directory path)))
+
 (defun mojo-scene-name-from-assistant ()
   (let ((path (buffer-file-name)))
-    (substring (mojo-last-path-component path) 0 (- 0 (length "-assistant.js")))))
+    (and (string= "assistants" (mojo-parent-directory-name path))
+	 (substring (mojo-filename path) 0 (- 0 (length "-assistant.js"))))))
 
 (defun mojo-scene-name-from-view ()
-  (mojo-last-path-component (mojo-drop-last-path-component (buffer-file-name))))
+  (let ((path (buffer-file-name)))
+    (and (string= "views" (mojo-parent-directory-name (mojo-parent-directory path)))
+	 (mojo-parent-directory-name path))))
 
 ;;* interactive
 (defun mojo-switch-file-dwim ()
@@ -653,7 +809,7 @@ If the cache file does not exist then it is considered stale."
 			 scene-name "-scene.html")))))
 
 (defun mojo-ignored-path (path)
-  (let ((filename (mojo-last-path-component path)))
+  (let ((filename (mojo-filename path)))
     (or (string= (substring filename 0 1) ".")
 	(and (string= (substring filename 0 1) "#")
 	   (string= (substring filename -1) "#")))))

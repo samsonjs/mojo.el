@@ -77,7 +77,16 @@ this work."
   "Run Mojo in debug mode.  Assumed true while in such an early version."
   :type 'boolean
   :group 'mojo)
- 
+
+;; Call this from your emacs config file with the modes you want to hook.
+(defun mojo-setup-mode-hooks (&rest hooks)
+  "Add `MOJO-MAYBE-ENABLE-MINOR-MODE' to the specified mode hooks."
+  (dolist (hook hooks)
+    (add-hook hook 'mojo-maybe-enable-minor-mode)))
+
+(defun mojo-maybe-enable-minor-mode ()
+  (when (mojo-project-p)
+    (mojo-mode)))
 
 ;;* interactive generate
 (defun mojo-generate (title directory)
@@ -101,7 +110,7 @@ DIRECTORY is the directory where the files are stored."
 
 NAME is the name of the scene."
   (interactive "sScene Name: \n")
-  (let ((mojo-dir (mojo-root)))
+  (let ((mojo-dir (mojo-root t)))
     (mojo-cmd "palm-generate" (list "-t" "new_scene"
 				    "-p" (format "name=%s" name) mojo-dir))
     (find-file (format "%s/app/assistants/%s-assistant.js" mojo-dir name))
@@ -119,7 +128,7 @@ NAME is the name of the scene."
   "Package the current application into `MOJO-BUILD-DIRECTORY'."
   (interactive)
   (mojo-cmd "palm-package" (list "-o" (expand-file-name mojo-build-directory)
-				 (mojo-root))))
+				 (mojo-root t))))
 
 ;;* interactive 
 (defun mojo-install ()
@@ -239,16 +248,16 @@ vice versa."
 ;; Some support functions that grok the basics of a Mojo project. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun mojo-drop-last-path-component (path)
-  "Get the head of a path by dropping the last component."
+(defun mojo-parent-directory (path)
+  "Get the parent directory, i.e. the head of a path by dropping the last component."
   (if (< (length path) 2)
       path
     (substring path 0 (- (length path)
-			 (length (mojo-last-path-component path))
+			 (length (mojo-filename path))
 			 1)))) ;; subtract one more for the trailing slash
 
-(defun mojo-last-path-component (path)
-  "Get the tail of a path, i.e. the last component."
+(defun mojo-filename (path)
+  "Get the filename from a path, i.e. the last component, or tail."
   (if (< (length path) 2)
       path
     (let ((start -2))
@@ -259,19 +268,20 @@ vice versa."
 (defvar *mojo-last-root* ""
   "Last Mojo root found by `MOJO-ROOT'.")
 
-(defun mojo-root ()
-  "Find a Mojo project's root directory starting with `DEFAULT-DIRECTORY'."
-  (let ((last-component (mojo-last-path-component default-directory))
+(defun mojo-root (&optional ask)
+  "Find a Mojo project's root directory starting with `DEFAULT-DIRECTORY'.
+   If ASK is non-nil and no root was found, ask the user for a directory."
+  (let ((last-component (mojo-filename default-directory))
 	(dir-prefix default-directory))
     ;; remove last path element until we find appinfo.json
     (while (and (not (file-exists-p (concat dir-prefix "/appinfo.json")))
 		(not (< (length dir-prefix) 2)))
-      (setq last-component (mojo-last-path-component dir-prefix))
-      (setq dir-prefix (mojo-drop-last-path-component dir-prefix)))
+      (setq last-component (mojo-filename dir-prefix))
+      (setq dir-prefix (mojo-parent-directory dir-prefix)))
 
     ;; If no Mojo root found, ask for a directory.
-    (if (< (length dir-prefix) 2)
-	(setq dir-prefix (mojo-read-root)))
+    (when (and ask (< (length dir-prefix) 2))
+      (setq dir-prefix (mojo-read-root)))
 
     ;; Invalidate cached values when changing projects.
     (if (or (mojo-blank *mojo-last-root*)
@@ -390,7 +400,7 @@ The app id is stored in *mojo-package-filename* unless it was blank."
 		      (mojo-package-filename)))
          (package (read-file-name (format "Package file (default: %s): " default)
 				  (concat mojo-build-directory "/") default t)))
-    (setq *mojo-package-filename* (mojo-last-path-component package))
+    (setq *mojo-package-filename* (mojo-filename package))
     (expand-file-name package)))
 
 (defun mojo-read-app-id (&optional prompt)
@@ -496,12 +506,18 @@ If the cache file does not exist then it is considered stale."
       (setq path (car (mojo-filter-paths (directory-files stylesheet-dir t)))))
     (find-file path)))
 
+(defun mojo-parent-directory-name (path)
+  (mojo-filename (mojo-parent-directory path)))
+
 (defun mojo-scene-name-from-assistant ()
   (let ((path (buffer-file-name)))
-    (substring (mojo-last-path-component path) 0 (- 0 (length "-assistant.js")))))
+    (and (string= "assistants" (mojo-parent-directory-name path))
+	 (substring (mojo-filename path) 0 (- 0 (length "-assistant.js"))))))
 
 (defun mojo-scene-name-from-view ()
-  (mojo-last-path-component (mojo-drop-last-path-component (buffer-file-name))))
+  (let ((path (buffer-file-name)))
+    (and (string= "views" (mojo-parent-directory-name (mojo-parent-directory path)))
+	 (mojo-parent-directory-name path))))
 
 ;;* interactive
 (defun mojo-switch-file-dwim ()
@@ -533,7 +549,7 @@ If the cache file does not exist then it is considered stale."
 			 scene-name "-scene.html")))))
 
 (defun mojo-ignored-path (path)
-  (let ((filename (mojo-last-path-component path)))
+  (let ((filename (mojo-filename path)))
     (or (string= (substring filename 0 1) ".")
 	(and (string= (substring filename 0 1) "#")
 	   (string= (substring filename -1) "#")))))
