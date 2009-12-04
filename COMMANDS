@@ -1,3 +1,20 @@
+Default key bindings:
+ 
+  * C-c C-c a   -- mojo-switch-to-assistant
+  * C-c C-c i   -- mojo-switch-to-appinfo
+  * C-c C-c I   -- mojo-switch-to-index
+  * C-c C-c n   -- mojo-switch-to-next-view
+  * C-c C-c s   -- mojo-switch-to-sources
+  * C-c C-c S   -- mojo-switch-to-stylesheet
+  * C-c C-c v   -- mojo-switch-to-view
+  * C-c C-c SPC -- mojo-switch-file-dwim
+  * C-c C-c C-e -- mojo-emulate
+  * C-c C-c C-p -- mojo-package
+  * C-c C-c C-r -- mojo-package-install-and-inspect
+  * C-c C-c C-s -- mojo-generate-scene
+  * C-c C-c C-t -- mojo-toggle-target
+
+
 The complete command list:
 
   Code generation
