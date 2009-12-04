@@ -13,19 +13,19 @@
 
      Keybindings are:
 
-      * C-c a     -- \\[mojo-switch-to-assistant]
-      * C-c i     -- \\[mojo-switch-to-appinfo]
-      * C-c I     -- \\[mojo-switch-to-index]
-      * C-c n     -- \\[mojo-switch-to-next-view]
-      * C-c s     -- \\[mojo-switch-to-sources]
-      * C-c S     -- \\[mojo-switch-to-stylesheet]
-      * C-c v     -- \\[mojo-switch-to-view]
-      * C-c SPC   -- \\[mojo-switch-file-dwim]
-      * C-c C-e   -- \\[mojo-emulate]
-      * C-c C-p   -- \\[mojo-package]
-      * C-c C-r   -- \\[mojo-package-install-and-inspect]
-      * C-c C-s   -- \\[mojo-generate-scene]
-      * C-c C-t   -- \\[mojo-toggle-target]
+      * C-c C-c a     -- \\[mojo-switch-to-assistant]
+      * C-c C-c i     -- \\[mojo-switch-to-appinfo]
+      * C-c C-c I     -- \\[mojo-switch-to-index]
+      * C-c C-c n     -- \\[mojo-switch-to-next-view]
+      * C-c C-c s     -- \\[mojo-switch-to-sources]
+      * C-c C-c S     -- \\[mojo-switch-to-stylesheet]
+      * C-c C-c v     -- \\[mojo-switch-to-view]
+      * C-c C-c SPC   -- \\[mojo-switch-file-dwim]
+      * C-c C-c C-e   -- \\[mojo-emulate]
+      * C-c C-c C-p   -- \\[mojo-package]
+      * C-c C-c C-r   -- \\[mojo-package-install-and-inspect]
+      * C-c C-c C-s   -- \\[mojo-generate-scene]
+      * C-c C-c C-t   -- \\[mojo-toggle-target]
 
      See the source code mojo.el or the README file for a list of
      all of the interactive commands."
@@ -35,19 +35,19 @@
   :lighter "-Mojo"
   ;; The minor mode bindings.
   :keymap
-  '(("\C-ca" . mojo-switch-to-assistant)
-    ("\C-ci" . mojo-switch-to-appinfo)
-    ("\C-cI" . mojo-switch-to-index)
-    ("\C-cn" . mojo-switch-to-next-view)
-    ("\C-cs" . mojo-switch-to-sources)
-    ("\C-cS" . mojo-switch-to-stylesheet)
-    ("\C-cv" . mojo-switch-to-view)
-    ("\C-c " . mojo-switch-file-dwim)
-    ("\C-c\C-e" . mojo-emulate)
-    ("\C-c\C-p" . mojo-package)
-    ("\C-c\C-r" . mojo-package-install-and-inspect)
-    ("\C-c\C-s" . mojo-generate-scene)
-    ("\C-c\C-t" . mojo-toggle-target))
+  '(("\C-c\C-ca" . mojo-switch-to-assistant)
+    ("\C-c\C-ci" . mojo-switch-to-appinfo)
+    ("\C-c\C-cI" . mojo-switch-to-index)
+    ("\C-c\C-cn" . mojo-switch-to-next-view)
+    ("\C-c\C-cs" . mojo-switch-to-sources)
+    ("\C-c\C-cS" . mojo-switch-to-stylesheet)
+    ("\C-c\C-cv" . mojo-switch-to-view)
+    ("\C-c\C-c " . mojo-switch-file-dwim)
+    ("\C-c\C-c\C-e" . mojo-emulate)
+    ("\C-c\C-c\C-p" . mojo-package)
+    ("\C-c\C-c\C-r" . mojo-package-install-and-inspect)
+    ("\C-c\C-c\C-s" . mojo-generate-scene)
+    ("\C-c\C-c\C-t" . mojo-toggle-target))
   :group 'mojo)
 
 (defcustom mojo-sdk-directory
@@ -80,11 +80,12 @@ this work."
 
 ;; Call this from your emacs config file with the modes you want to hook.
 (defun mojo-setup-mode-hooks (&rest hooks)
-  "Add `MOJO-MAYBE-ENABLE-MINOR-MODE' to the specified mode hooks."
+  "Add `mojo-maybe-enable-minor-mode' to the specified mode hooks."
   (dolist (hook hooks)
     (add-hook hook 'mojo-maybe-enable-minor-mode)))
 
 (defun mojo-maybe-enable-minor-mode ()
+  "Enable `mojo-mode' when the current buffer belongs to a Mojo project."
   (when (mojo-project-p)
     (mojo-mode)))
 
@@ -132,7 +133,7 @@ NAME is the name of the scene."
 
 ;;* interactive 
 (defun mojo-install ()
-  "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator needs to be running."
+  "Install the package named by `MOJO-PACKAGE-FILENAME'. The emulator is started if needed."
   (interactive)
   (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list (expand-file-name (mojo-read-package-filename))))
@@ -147,7 +148,7 @@ NAME is the name of the scene."
 
 ;;* interactive 
 (defun mojo-delete ()
-  "Remove the current application using `MOJO-APP-ID'."
+  "Remove an application."
   (interactive)
   (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-install" (list "-r" (mojo-read-app-id)))
@@ -169,14 +170,14 @@ NAME is the name of the scene."
 
 ;;* interactive 
 (defun mojo-launch ()
-  "Launch the current application in the emulator."
+  "Launch the current application in the emulator, and the emulator if necessary.."
   (interactive)
   (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-launch" (list (mojo-read-app-id))))
 
 ;;* interactive 
 (defun mojo-close ()
-  "Close launched application."
+  "Close an application."
   (interactive)
   (mojo-ensure-emulator-is-running)
   (mojo-cmd-with-target "palm-launch" (list "-c" (mojo-read-app-id))))
@@ -237,8 +238,7 @@ Sets `*mojo-target*' to \"tcp\"."
 
 ;;* interactive
 (defun mojo-toggle-target ()
-  "Automatically change the target device from 'usb' to 'tcp' and
-vice versa."
+  "Automatically change the target device from 'usb' to 'tcp' and vice versa."
   (interactive)
   (if (string= "usb" *mojo-target*)
       (mojo-target-emulator)
@@ -284,17 +284,18 @@ vice versa."
       (setq dir-prefix (mojo-read-root)))
 
     ;; Invalidate cached values when changing projects.
-    (if (or (mojo-blank *mojo-last-root*)
-	    (not (string= dir-prefix *mojo-last-root*)))
-	(progn
-	  (setq *mojo-last-root* dir-prefix)
-	  (setq *mojo-package-filename* nil)
-	  (setq *mojo-app-id* nil)))
+    (when (or (mojo-blank *mojo-last-root*)
+	      (not (string= dir-prefix *mojo-last-root*)))
+      (setq *mojo-last-root* dir-prefix)
+      (setq *mojo-package-filename* nil)
+      (setq *mojo-app-id* nil)
+      (setq *mojo-appinfo* nil))
 
     dir-prefix))
 
-;; foolproof?
+;; foolproof enough? don't want false positives.
 (defun mojo-project-p ()
+  "Return T if the current buffer belongs to a Mojo project, otherwise NIL."
   (and (file-exists-p (concat (mojo-root) "/appinfo.json"))
        (file-exists-p (concat (mojo-root) "/sources.json"))
        (file-exists-p (concat (mojo-root) "/app"))
@@ -303,34 +304,40 @@ vice versa."
 (defun mojo-read-json-file (filename)
   "Parse the JSON in FILENAME and return the result."
   (save-excursion
-    (let ((origbuffer (current-buffer))
-	  (filebuffer (find-file-noselect filename)))
+    (let* ((origbuffer (current-buffer))
+	   (path (concat (mojo-root) "/" filename))
+	   (filebuffer (find-file-noselect path)))
       (set-buffer filebuffer)
       (let ((text (buffer-string)))
 	(switch-to-buffer origbuffer)
         (json-read-from-string text)))))
 
+(defvar *mojo-appinfo* nil
+  "Last structure read from appinfo.json.")
+
+(defun mojo-appinfo ()
+  "Get the contents of the appinfo.json file. Last read appinfo is cached."
+  (when (mojo-project-p)
+    (or *mojo-appinfo*
+	(setq *mojo-appinfo* (mojo-read-json-file "appinfo.json")))))
+
 (defun mojo-app-version ()
   "Parse the project version from the appinfo.json file in `MOJO-ROOT'."
   (when (mojo-project-p)
-    (let ((appinfo (mojo-read-json-file (concat (mojo-root) "/appinfo.json"))))
-      (cdr (assoc 'version appinfo)))))
+    (cdr (assoc 'version (mojo-appinfo)))))
 
 (defun mojo-app-id ()
   "Parse the project id from the appinfo.json file in `MOJO-ROOT'."
   (when (mojo-project-p)
-    (let ((appinfo (mojo-read-json-file (concat (mojo-root) "/appinfo.json"))))
-      (cdr (assoc 'id appinfo)))))
+      (cdr (assoc 'id (mojo-appinfo)))))
 
 (defun mojo-app-title ()
   "Parse the project title from appinfo.json."
   (when (mojo-project-p)
-    (let ((appinfo (mojo-read-json-file (concat (mojo-root) "/appinfo.json"))))
-      (cdr (assoc 'title appinfo)))))
+      (cdr (assoc 'title (mojo-appinfo)))))
 
 (defun mojo-informal-app-id ()
-  "Parse the project title from appinfo.json and remove all non alphanumeric
-   characters."
+  "Parse the project title from appinfo.json and remove all non alphanumeric characters."
   (let ((title (downcase (mojo-app-title))))
     (replace-regexp-in-string "[^a-z0-9]" "" title)))
 
@@ -387,13 +394,11 @@ vice versa."
            (= 0 (length thing)))))
 
 (defun mojo-read-root ()
-  "Get the path to a Mojo application, prompting with completion and
-  history."
+  "Get the path to a Mojo application, prompting with completion and history."
   (read-file-name "Mojo project: " (expand-file-name (concat mojo-project-directory "/"))))
 
 (defun mojo-read-package-filename ()
-  "Get the filename of a packaged application, prompting with completion and
-  history.
+  "Get the filename of a packaged application, prompting with completion and history.
 
 The app id is stored in *mojo-package-filename* unless it was blank."
   (let* ((default (or *mojo-package-filename*
@@ -404,8 +409,7 @@ The app id is stored in *mojo-package-filename* unless it was blank."
     (expand-file-name package)))
 
 (defun mojo-read-app-id (&optional prompt)
-  "Get the id of an existing application, prompting with completion and
-  history.
+  "Get the id of an existing application, prompting with completion and history.
 
 The app id is stored in *mojo-app-id* unless it was blank."
   (let* ((default (or *mojo-app-id* (mojo-app-id)))
@@ -452,8 +456,7 @@ The app id is stored in *mojo-app-id* unless it was blank."
     (nreverse apps)))
 
 (defun mojo-app-cache-stale-p ()
-  "Non-nil if the cache in `MOJO-APP-CACHE-FILE' is more than
-  *mojo-app-cache-ttl* seconds old.
+  "Non-nil if the cache in `MOJO-APP-CACHE-FILE' is more than *mojo-app-cache-ttl* seconds old.
 
 If the cache file does not exist then it is considered stale."
   (or (null (file-exists-p (mojo-app-cache-file)))
@@ -476,6 +479,7 @@ If the cache file does not exist then it is considered stale."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar *mojo-switch-suffixes*
+  "Suffixes of files that we can guess where to switch."
   '(("-assistant.js" . mojo-switch-to-view)
     ("-scene.html"   . mojo-switch-to-assistant)
     (".html"         . mojo-switch-to-next-view)
@@ -483,49 +487,59 @@ If the cache file does not exist then it is considered stale."
 
 ;;* interactive
 (defun mojo-switch-to-appinfo ()
+  "Switch to appinfo.json."
   (interactive)
-  (find-file (concat (mojo-root) "/appinfo.json")))
+  (when (mojo-project-p)
+    (find-file (concat (mojo-root) "/appinfo.json"))))
 
 ;;* interactive
 (defun mojo-switch-to-index ()
+  "Switch to index.html."
   (interactive)
-  (find-file (concat (mojo-root) "/index.html")))
+  (when (mojo-project-p)
+    (find-file (concat (mojo-root) "/index.html"))))
 
 ;;* interactive
 (defun mojo-switch-to-sources ()
+  "Switch to sources.json."
   (interactive)
-  (find-file (concat (mojo-root) "/sources.json")))
+  (when (mojo-project-p)
+    (find-file (concat (mojo-root) "/sources.json"))))
 
 ;;* interactive
 (defun mojo-switch-to-stylesheet ()
+  "Switch to the main CSS stylesheet, or the first one."
   (interactive)
-  (let* ((stylesheet-dir (concat (mojo-root) "/stylesheets"))
-	 (path (concat stylesheet-dir "/"
-		       (mojo-informal-app-id) ".css")))
-    (when (not (file-exists-p path))
-      (setq path (car (mojo-filter-paths (directory-files stylesheet-dir t)))))
-    (find-file path)))
+  (when (mojo-project-p)
+    (let* ((stylesheet-dir (concat (mojo-root) "/stylesheets"))
+	   (path (concat stylesheet-dir "/"
+			 (mojo-informal-app-id) ".css")))
+      (when (not (file-exists-p path))
+	(setq path (car (mojo-filter-paths (directory-files stylesheet-dir t)))))
+      (find-file path))))
 
 (defun mojo-parent-directory-name (path)
+  "The parent directory's basename."
   (mojo-filename (mojo-parent-directory path)))
 
 (defun mojo-scene-name-from-assistant ()
+  "The scene name of the assistant being edited."
   (let ((path (buffer-file-name)))
     (and (string= "assistants" (mojo-parent-directory-name path))
 	 (substring (mojo-filename path) 0 (- 0 (length "-assistant.js"))))))
 
 (defun mojo-scene-name-from-view ()
+  "The scene name of the view being edited."
   (let ((path (buffer-file-name)))
     (and (string= "views" (mojo-parent-directory-name (mojo-parent-directory path)))
 	 (mojo-parent-directory-name path))))
 
 ;;* interactive
 (defun mojo-switch-file-dwim ()
-  "Determine if the current buffer is visiting a file with known
-   relationships. Try to find the 'best' choice and switch to it.
+  "Attempt to intelligently find a related file and switch to it.
 
-   This does what I (sjs) mean by default, so change
-   *mojo-switch-suffixes* if you want different behaviour."
+This does what I (sjs) mean by default, so change *mojo-switch-suffixes*
+if you want different behaviour."
   (interactive)
   (let* ((path (buffer-file-name))
 	 (suffixes (copy-list *mojo-switch-suffixes*))
@@ -541,6 +555,7 @@ If the cache file does not exist then it is considered stale."
 
 ;;* interactive
 (defun mojo-switch-to-view ()
+  "Switch to the corresponding main view from an assistant."
   (interactive)
   (when (mojo-project-p)
     (let ((scene-name (mojo-scene-name-from-assistant)))
@@ -549,12 +564,14 @@ If the cache file does not exist then it is considered stale."
 			 scene-name "-scene.html")))))
 
 (defun mojo-ignored-path (path)
+  "Paths that we don't want to look at when walking directories."
   (let ((filename (mojo-filename path)))
-    (or (string= (substring filename 0 1) ".")
-	(and (string= (substring filename 0 1) "#")
+    (or (string= (substring filename 0 1) ".") ;; "." and ".." and hidden files
+	(and (string= (substring filename 0 1) "#") ;; emacs recovery files
 	   (string= (substring filename -1) "#")))))
 
 (defun mojo-filter-paths (all-paths)
+  "Filter out unimportant paths from a list of paths."
   (let ((wanted-paths (list)))
     (dolist (path all-paths wanted-paths)
       (unless (mojo-ignored-path path)
@@ -562,6 +579,7 @@ If the cache file does not exist then it is considered stale."
     (reverse wanted-paths)))
 
 (defun mojo-index (elem list)
+  "Return the position of ELEM in LIST."
   (catch 'break
     (let ((index 0))
       (dolist (path list index)
@@ -571,6 +589,7 @@ If the cache file does not exist then it is considered stale."
 
 ;;* interactive
 (defun mojo-switch-to-next-view ()
+  "Switch to the next view in this scene, alphabetically.  Wrap around at the end."
   (interactive)
   (when (mojo-project-p)
     (let* ((scene-name (mojo-scene-name-from-view))
@@ -583,6 +602,7 @@ If the cache file does not exist then it is considered stale."
 
 ;;* interactive
 (defun mojo-switch-to-assistant ()
+  "Swtich to the corresponding assistant from a view."
   (interactive)
   (let ((scene-name (mojo-scene-name-from-view)))
     (when (and (mojo-project-p)
@@ -616,8 +636,9 @@ This command only works on Unix-like systems."
   (= 0 (shell-command "ps x | fgrep 'Palm SDK' | fgrep -v fgrep >/dev/null 2>&1")))
 
 (defun mojo-emulator-responsive-p ()
-  "Determine if the webOS emulator is able to respond to commands yet
- (i.e. if it's done booting)."
+  "Determine if the webOS emulator is able to respond to commands yet.
+
+(i.e. if it's done booting)."
   (= 0 (shell-command "palm-install -d tcp --list >/dev/null 2>&1")))
 
 (defun mojo-path-to-cmd (cmd)
