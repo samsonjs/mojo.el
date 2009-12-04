@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+sjs 2009-12-04
+v 0.9.8 (framework_config.json support)
+
+      - Implemented support for framework_config.json.  Functions for
+        both reading and writing all known values.
+
 sjs 2009-12-03
 v 0.9.7 (hooks)
 

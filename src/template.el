@@ -1,4 +1,4 @@
-;;; #{app['basename']} --- Interactive functions to aid the development of webOS apps
+;;; #{app['basename']} --- Interactive functions for webOS development
 ;; #{timestamp}
 (defconst mojo-version "#{app['version']}")
 
@@ -8,9 +8,9 @@
 
 ;;; Commentary:
 (defgroup mojo '()
-  "Interactive functions to aid the development of webOS apps.
+  "Interactive functions for webOS development.
 
-This package is in early beta.  I am open to any contributions or
+This package is in beta.  I am open to any contributions or
 ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;;; Installation:

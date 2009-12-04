@@ -312,22 +312,34 @@ Sets `*mojo-target*' to \"tcp\"."
 	(switch-to-buffer origbuffer)
         (json-read-from-string text)))))
 
+(defun mojo-write-json-file (filename content)
+  "Convert CONTENT to JSON and write to FILENAME in `mojo-root'."
+  (save-excursion
+    (let* ((origbuffer (current-buffer))
+	   (path (concat (mojo-root) "/" filename))
+	   (filebuffer (find-file-noselect path)))
+      (set-buffer filebuffer)
+      (erase-buffer)
+      (insert (json-encode content) "\n")
+      (save-buffer)
+      (switch-to-buffer origbuffer))))
+
 (defvar *mojo-appinfo* nil
   "Last structure read from appinfo.json.")
 
 (defun mojo-appinfo ()
-  "Get the contents of the appinfo.json file. Last read appinfo is cached."
+  "Get the contents of appinfo.json. Last read appinfo is cached."
   (when (mojo-project-p)
     (or *mojo-appinfo*
 	(setq *mojo-appinfo* (mojo-read-json-file "appinfo.json")))))
 
 (defun mojo-app-version ()
-  "Parse the project version from the appinfo.json file in `MOJO-ROOT'."
+  "Parse the project version from appinfo.json."
   (when (mojo-project-p)
     (cdr (assoc 'version (mojo-appinfo)))))
 
 (defun mojo-app-id ()
-  "Parse the project id from the appinfo.json file in `MOJO-ROOT'."
+  "Parse the project id from appinfo.json."
   (when (mojo-project-p)
       (cdr (assoc 'id (mojo-appinfo)))))
 
@@ -345,6 +357,123 @@ Sets `*mojo-target*' to \"tcp\"."
   "Get the package filename for the specified application."
   (format "%s/%s_%s_all.ipk" (expand-file-name mojo-build-directory)
 	  (mojo-app-id) (mojo-app-version)))
+
+
+(defun mojo-framework-config ()
+  "Get the contents of framework_config.json."
+  (when (mojo-project-p)
+    (and (file-exists-p (concat (mojo-root) "/framework_config.json"))
+	 (mojo-read-json-file "framework_config.json"))))
+
+(defun mojo-write-framework-config (config)
+  "Set the contents of framework_config.json to the JSON representation of CONFIG."
+  (when (mojo-project-p)
+    (mojo-write-json-file "framework_config.json" config)))
+
+(defun mojo-framework-config-value (key)
+  "Retrieve a value from framework_config.json."
+  (when (and (mojo-project-p)
+	     (mojo-framework-config))
+    (cdr (assoc key (mojo-framework-config)))))
+
+(defun mojo-framework-config-boolean (key)
+  "Retrieve the value of a boolean in framework_config.json."
+  (string= t (mojo-framework-config-value key)))
+
+;;* interactive
+(defun mojo-debugging-enabled-p ()
+  (interactive)
+  "Determine if debugging is enabled for the current Mojo project."
+  (print (mojo-framework-config-boolean 'debuggingEnabled)))
+
+;;* interactive
+(defun mojo-log-events-p ()
+  (interactive)
+  "Determine if event logging is enabled for the current Mojo project."
+  (print (mojo-framework-config-boolean 'logEvents)))
+
+;;* interactive
+(defun mojo-timing-enabled-p ()
+  (interactive)
+  "Determine if timing is enabled for the current Mojo project."
+  (print (mojo-framework-config-boolean 'timingEnabled)))
+
+;;* interactive
+(defun mojo-use-native-json-parser-p ()
+  (interactive)
+  "Determine if the native JSON parser is enabled for the current Mojo project."
+  (print (mojo-framework-config-boolean 'useNativeJSONParser)))
+
+;;* interactive
+(defun mojo-log-level ()
+  "The log level for the current Mojo project."
+  (interactive)
+  (when (and (mojo-project-p)
+	     (mojo-framework-config))
+    (print (cdr (assoc 'logLevel (mojo-framework-config))))))
+
+;;* interactive
+(defun mojo-escape-html-in-templates-p ()
+  "Return T if HTML is escaped in templates, NIL otherwise."
+  (interactive)
+  (print (mojo-framework-config-boolean 'escapeHTMLInTemplates)))
+
+
+(defun mojo-change-framework-config-value (key value)
+  "Set the value for a key in framework_config.json."
+  (interactive)
+  (when (mojo-project-p)
+    (let ((config (mojo-framework-config)))
+      (unless config (setq config (list)))
+      (setq config (assq-delete-all key config))
+      (mojo-write-framework-config (cons (cons key (or value :json-false))
+					 config)))))
+
+;;* interactive
+(defun mojo-set-debugging-enabled (enabled)
+  "Enable debugging if ENABLED is t, or disable if it is nil or :json-false."
+  (interactive "XEnable debugging? (t or nil) ")
+  (mojo-change-framework-config-value 'debuggingEnabled enabled))
+
+;;* interactive
+(defun mojo-toggle-debugging ()
+  "If debugging is enabled then disable it, and vice versa."
+  (interactive)
+  (mojo-change-framework-config-value 'debuggingEnabled (not (mojo-debugging-enabled-p))))
+
+;;* interactive
+(defun mojo-set-log-level (level)
+  "Set the log level to the integer LEVEL.
+
+Mojo.Log.LOG_LEVEL_INFO is 10
+Mojo.Log.LOG_LEVEL_ERROR is 30"
+  (interactive "nLog level: ")
+  (mojo-change-framework-config-value 'logLevel level))
+
+;;* interactive
+(defun mojo-set-escape-html-in-templates (enabled)
+  "Escape HTML if ENABLED is t, don't escape HTML if it is nil or :json-false."
+  (interactive "XEscape HTML in templates? (t or nil) ")
+  (mojo-change-framework-config-value 'escapeHTMLInTemplates enabled))
+
+;;* interactive
+(defun mojo-set-log-events (enabled)
+  "Turn event logging on if ENABLED is t, or off if it is nil or :json-false."
+  (interactive "XLog events? (t or nil) ")
+  (mojo-change-framework-config-value 'debuggingEnabled enabled))
+
+;;* interactive
+(defun mojo-set-timing-enabled (enabled)
+  "Enable timing if ENABLED is t, or disable timing if it is nil or :json-false."
+  (interactive "XEnable timing? (t or nil) ")
+  (mojo-change-framework-config-value 'timingEnabled enabled))
+
+;;* interactive
+(defun mojo-set-use-native-json-parser (enabled)
+  "Use the native JSON parser if ENABLED is t, or not if it is nil or :json-false."
+  (interactive "XUse native JSON parser? (t or nil) ")
+  (mojo-change-framework-config-value 'useNativeJSONParser enabled))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -626,8 +755,8 @@ URL is the luna url, and DATA is the data."
   (mojo-cmd "luna-send" (list "-n" "1" url data)))
 
 (defvar *mojo-target* "tcp"
-  "Used to specify the target platform, \"usb\" for the device
-  and \"tcp\" for the emulator.  Deaults to \"tcp\".")
+  "Used to specify the target platform, \"usb\" for the device and \"tcp\"
+for the emulator.  Deaults to \"tcp\".")
 
 (defun mojo-emulator-running-p ()
   "Determine if the webOS emulator is running or not.

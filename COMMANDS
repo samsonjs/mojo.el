@@ -85,3 +85,43 @@ The complete command list:
 
  mojo-switch-to-stylesheet
    Switch to the main stylesheet.
+
+
+  Manage framework_config.json
+  ----------------------------
+
+ mojo-debugging-enabled-p
+   See if debugging is enabled.
+
+ mojo-log-events-p
+   See if event logging is enabled.
+
+ mojo-timing-enabled-p
+   See if timing is enabled.
+
+ mojo-use-native-json-parser-p
+   See if the native JSON parser is used (if available).
+
+ mojo-log-level
+   See the log level.
+
+ mojo-html-escaped-in-templates-p
+   See if HTML is escaped in templates.
+
+ mojo-set-debugging-enabled
+   Enable or disable debugging.
+
+ mojo-set-log-events
+   Enable or disable event logging.
+
+ mojo-set-timing-enabled
+   Enable or disable timing.
+
+ mojo-set-use-native-json-parser
+   Enable or disable use of the native JSON parser.
+
+ mojo-set-log-level
+   Set the log level.
+
+ mojo-set-escape-html-in-templates
+   Enable or disable escaping of HTML in templates.

@@ -3,10 +3,11 @@ TODO
 
 for 1.0
 -------
-* turn on and off debugging & logging
 * switch to last visited view
 
-beyond (Mojo.Ext)
+beyond
 -----------------
+* dynamic framework_config params for palm-launch
+  see http://developer.palm.com/index.php?option=com_content&view=article&id=1725
 * inject Mojo.Ext
 * convert assistants to inherit from SceneAssistantBase
