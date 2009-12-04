@@ -608,11 +608,11 @@ If the cache file does not exist then it is considered stale."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar *mojo-switch-suffixes*
-  "Suffixes of files that we can guess where to switch."
   '(("-assistant.js" . mojo-switch-to-view)
     ("-scene.html"   . mojo-switch-to-assistant)
     (".html"         . mojo-switch-to-next-view)
-    (""              . mojo-switch-to-appinfo)))
+    (""              . mojo-switch-to-appinfo))
+  "Suffixes of files that we can guess where to switch.")
 
 ;;* interactive
 (defun mojo-switch-to-appinfo ()

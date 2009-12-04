@@ -2,6 +2,12 @@ CHANGELOG
 =========
 
 sjs 2009-12-04
+v 0.9.9 (bug fix)
+
+      - Fixed the value of *mojo-switch-suffixes*, which was confusing
+        mojo-switch-file-dwim.
+
+sjs 2009-12-04
 v 0.9.8 (framework_config.json support)
 
       - Implemented support for framework_config.json.  Functions for

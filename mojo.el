@@ -1,6 +1,6 @@
 ;;; mojo.el --- Interactive functions for webOS development
-;; 2009-12-04 02:24:07
-(defconst mojo-version "0.9.8")
+;; 2009-12-04 15:44:24
+(defconst mojo-version "0.9.9")
 
 (require 'json)
 
@@ -41,26 +41,58 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;  
 ;;  1. Put json.el and mojo.el somewhere in your load-path.
 ;;     (Use M-x show-variable RET load-path to see what your load path is.)
+;; 
+;;       => http://github.com/samsonjs/mojo.el       -- mojo.el and json.el
+;;       => http://edward.oconnor.cx/2006/03/json.el -- official json.el
 ;;  
 ;;  2. Add this to your Emacs init file: (require 'mojo)
 ;;  
 ;;  3. Enable mojo-mode for modes that you use for webOS, e.g.:
 ;;  
-;;  (mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook
-;;                         'espresso-mode-hook 'html-mode-hook)
+;;     (mojo-setup-mode-hooks 'css-mode-hook 'js2-mode-hook
+;;                            'espresso-mode-hook 'html-mode-hook)
 ;;  
-;;     Note that this does not simply enable mojo-mode for these types
+;;   * Note that this does not simply enable mojo-mode for these types
 ;;     wholesale, but instead only enables mojo-mode when it finds that
 ;;     the file is also under a Mojo project root (using mojo-project-p).
-;;  
+;; 
 ;;  4. Make sure you customize the variables:
 ;;     mojo-project-directory, mojo-sdk-directory and mojo-build-directory
 ;;     (Use M-x customize-group RET mojo RET)
+;; 
+;;  (optional but recommended)
+;; 
+;;  5. js2-mode for JavaScript and espresso-mode for JSON.
+;; 
+;;       => http://code.google.com/p/js2-mode/
+;;       => http://www.nongnu.org/espresso/
+;;  
+;; 
+;; That's it! You've got the most powerful Mojo development environment.
+;; 
+;; Check COMMANDS for a list of all interactive commands and key bindings.
 
 
 
 ;;; Commands:
 ;;
+;; Default key bindings:
+;;  
+;;   * C-c C-c a   -- mojo-switch-to-assistant
+;;   * C-c C-c i   -- mojo-switch-to-appinfo
+;;   * C-c C-c I   -- mojo-switch-to-index
+;;   * C-c C-c n   -- mojo-switch-to-next-view
+;;   * C-c C-c s   -- mojo-switch-to-sources
+;;   * C-c C-c S   -- mojo-switch-to-stylesheet
+;;   * C-c C-c v   -- mojo-switch-to-view
+;;   * C-c C-c SPC -- mojo-switch-file-dwim
+;;   * C-c C-c C-e -- mojo-emulate
+;;   * C-c C-c C-p -- mojo-package
+;;   * C-c C-c C-r -- mojo-package-install-and-inspect
+;;   * C-c C-c C-s -- mojo-generate-scene
+;;   * C-c C-c C-t -- mojo-toggle-target
+;; 
+;; 
 ;; The complete command list:
 ;; 
 ;;   Code generation
@@ -210,6 +242,12 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 
 ;; CHANGELOG
 ;; =========
+;; 
+;; sjs 2009-12-04
+;; v 0.9.9 (bug fix)
+;; 
+;;       - Fixed the value of *mojo-switch-suffixes*, which was confusing
+;;         mojo-switch-file-dwim.
 ;; 
 ;; sjs 2009-12-04
 ;; v 0.9.8 (framework_config.json support)
@@ -913,11 +951,11 @@ If the cache file does not exist then it is considered stale."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar *mojo-switch-suffixes*
-  "Suffixes of files that we can guess where to switch."
   '(("-assistant.js" . mojo-switch-to-view)
     ("-scene.html"   . mojo-switch-to-assistant)
     (".html"         . mojo-switch-to-next-view)
-    (""              . mojo-switch-to-appinfo)))
+    (""              . mojo-switch-to-appinfo))
+  "Suffixes of files that we can guess where to switch.")
 
 ;;* interactive
 (defun mojo-switch-to-appinfo ()

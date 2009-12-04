@@ -2,6 +2,6 @@
     "title":    "mojo.el",
     "filename": "../mojo.el",
     "basename": "mojo.el",
-    "version": "0.9.8",
+    "version": "0.9.9",
     "template": "template.el"
 }
