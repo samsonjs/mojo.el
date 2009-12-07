@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+sjs 2009-12-07
+v 0.9.10 (bug fix)
+
+      - All arguments sent through mojo-cmd now quoted before being
+        sent to the shell (in case filenames contain spaces).  Values
+        are unintelligently wrapped in double quotes, this is *not*
+        escaping, just brain-dead quoting.
+
+      - New default key binding: C-c C-c C-d runs mojo-target-device
+
 sjs 2009-12-04
 v 0.9.9 (bug fix)
 

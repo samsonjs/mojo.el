@@ -8,6 +8,7 @@ Default key bindings:
   * C-c C-c S   -- mojo-switch-to-stylesheet
   * C-c C-c v   -- mojo-switch-to-view
   * C-c C-c SPC -- mojo-switch-file-dwim
+  * C-c C-c C-d -- mojo-target-device
   * C-c C-c C-e -- mojo-emulate
   * C-c C-c C-p -- mojo-package
   * C-c C-c C-r -- mojo-package-install-and-inspect

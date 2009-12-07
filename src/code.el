@@ -21,6 +21,7 @@
       * C-c C-c S     -- \\[mojo-switch-to-stylesheet]
       * C-c C-c v     -- \\[mojo-switch-to-view]
       * C-c C-c SPC   -- \\[mojo-switch-file-dwim]
+      * C-c C-c C-d   -- \\[mojo-target-device]
       * C-c C-c C-e   -- \\[mojo-emulate]
       * C-c C-c C-p   -- \\[mojo-package]
       * C-c C-c C-r   -- \\[mojo-package-install-and-inspect]
@@ -43,6 +44,7 @@
     ("\C-c\C-cS" . mojo-switch-to-stylesheet)
     ("\C-c\C-cv" . mojo-switch-to-view)
     ("\C-c\C-c " . mojo-switch-file-dwim)
+    ("\C-c\C-c\C-d" . mojo-target-device)
     ("\C-c\C-c\C-e" . mojo-emulate)
     ("\C-c\C-c\C-p" . mojo-package)
     ("\C-c\C-c\C-r" . mojo-package-install-and-inspect)
@@ -121,6 +123,7 @@ NAME is the name of the scene."
 (defun mojo-emulate ()
   "Launch the palm emulator."
   (interactive)
+  (mojo-target-emulator) ;; target emulator from now on
   (unless (mojo-emulator-running-p)
     (mojo-cmd "palm-emulator" nil)))
 
@@ -776,6 +779,12 @@ This command only works on Unix-like systems."
     ((windows-nt) (concat mojo-sdk-directory "/bin/" cmd ".bat"))
     (t (concat mojo-sdk-directory "/bin/" cmd))))
 
+(defun mojo-quote (string)
+  "Wrap a string in double quotes.
+
+Used to quote filenames sent to shell commands."
+  (concat "\"" string "\""))
+
 ;;* lowlevel cmd
 (defun mojo-cmd (cmd args)
   "General interface for running mojo-sdk commands.
@@ -785,8 +794,8 @@ CMD is the name of the command (without path or extension) to execute.
 ARGS is a list of all arguments to the command.
  These arguments are NOT shell quoted."
   (let ((cmd (mojo-path-to-cmd cmd))
-	(args (mojo-string-join " " args)))
-    (if mojo-debug (message "running %s with args %s " cmd args))
+	(args (mojo-string-join " " (mapcar 'mojo-quote args))))
+    (when mojo-debug (message "running %s with args %s " cmd args))
     (shell-command (concat cmd " " args))))
 
 ;;* lowlevel cmd
