@@ -1,6 +1,19 @@
 CHANGELOG
 =========
 
+sjs 2009-12-08
+v 1.0.0b (beta)
+
+      - Implemented mojo-switch-to-last-view, switches to the last
+        visited Mojo view.  Several supporting functions mainly
+        abstracted from existing functions that groked some part of a
+        Mojo project.
+
+      - Turned debugging off by default.
+
+      - Added some docstrings and updated docs to reflect new
+        functionality.
+
 sjs 2009-12-07
 v 0.9.10 (bug fix)
 

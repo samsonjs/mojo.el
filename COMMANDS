@@ -6,7 +6,7 @@ Default key bindings:
   * C-c C-c n   -- mojo-switch-to-next-view
   * C-c C-c s   -- mojo-switch-to-sources
   * C-c C-c S   -- mojo-switch-to-stylesheet
-  * C-c C-c v   -- mojo-switch-to-view
+  * C-c C-c v   -- mojo-switch-to-last-view
   * C-c C-c SPC -- mojo-switch-file-dwim
   * C-c C-c C-d -- mojo-target-device
   * C-c C-c C-e -- mojo-emulate
@@ -85,12 +85,16 @@ The complete command list:
  mojo-switch-to-assistant
    Switch to the corresponding assistant from any view file.
 
- mojo-switch-to-view
+ mojo-switch-to-main-view
    Switch to the main view from an assistant.
 
  mojo-switch-to-next-view
    Switch to the next view file, alphabetically.  Wraps around at the
    end.
+
+ mojo-switch-to-last-view
+   Switch to the last visited view buffer (excluding the current
+   buffer).
 
  mojo-switch-to-appinfo
    Switch to the appinfo.json file.
@@ -103,6 +107,10 @@ The complete command list:
 
  mojo-switch-to-stylesheet
    Switch to the main stylesheet.
+
+ mojo-switch-file-dwim
+   Switch to the next view from a view, and to the main view from an
+   assistant.  From any other file switch to appinfo.json.
 
 
   Manage framework_config.json
@@ -123,11 +131,14 @@ The complete command list:
  mojo-log-level
    See the log level.
 
- mojo-html-escaped-in-templates-p
+ mojo-escape-html-in-templates-p
    See if HTML is escaped in templates.
 
  mojo-set-debugging-enabled
    Enable or disable debugging.
+
+mojo-toggle-debugging
+   Toggle debugging in framework_config.json.
 
  mojo-set-log-events
    Enable or disable event logging.
