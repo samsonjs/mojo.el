@@ -52,6 +52,11 @@
     ("\C-c\C-c\C-t" . mojo-toggle-target))
   :group 'mojo)
 
+(defcustom mojo-sdk-version ""
+  "Version of the SDK installed. Since 1.4.5, the PDK and SDK are installed 
+at the same time, so there is only one var for both"
+  :version "1.4.5.465")
+
 (defcustom mojo-sdk-directory
   (case system-type
 	((windows-nt) "c:/progra~1/palm/sdk")
@@ -819,7 +824,11 @@ for the emulator.  Deaults to \"tcp\".")
   "Determine if the webOS emulator is running or not.
 
 This command only works on Unix-like systems."
-  (= 0 (shell-command "ps x | fgrep 'Palm SDK' | fgrep -v fgrep >/dev/null 2>&1")))
+  (case system-type
+    ((windows-nt) nil)
+    (darwin (= 0 (shell-command (concat "ps x | fgrep '" mojo-sdk-version "' | fgrep -v fgrep >/dev/null 2>&1"))))
+    (t (= 0 (shell-command "ps x | fgrep 'Palm SDK' | fgrep -v fgrep >/dev/null 2>&1")))))
+
 
 (defun mojo-emulator-responsive-p ()
   "Determine if the webOS emulator is able to respond to commands yet.

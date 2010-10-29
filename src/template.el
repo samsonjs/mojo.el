@@ -26,6 +26,10 @@ ideas.  Send me a pull request on github if you hack on mojo.el.")
 ;;
 ;; Below are customizable option list:
 ;;
+;;  `mojo-sdk-version'
+;;    Version of installed SDK
+;;    default = 1.4.5.465
+;;
 ;;  `mojo-sdk-directory'
 ;;    Path to where the mojo SDK is.
 ;;    default = (case system-type
