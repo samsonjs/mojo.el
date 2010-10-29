@@ -823,9 +823,9 @@ This command only works on Unix-like systems."
 
 (defun mojo-emulator-responsive-p ()
   "Determine if the webOS emulator is able to respond to commands yet.
-
 (i.e. if it's done booting)."
-  (= 0 (shell-command "palm-install -d tcp --list >/dev/null 2>&1")))
+(= 0 (shell-command (concat (mojo-path-to-cmd "palm-install") " -d tcp --list >/dev/null 2>&1"))))
+
 
 (defun mojo-path-to-cmd (cmd)
   "Return the absolute path to a Mojo SDK command line program."
