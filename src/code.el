@@ -203,10 +203,12 @@ NAME is the name of the scene."
   (mojo-cmd "palm-emulator" (list "--list")))
 
 ;;* interactive
-(defun mojo-hard-reset ()
+(defun mojo-hard-reset (image)
   "Perform a hard reset, clearing all data."
-  (interactive)
-  (mojo-cmd "palm-emulator" (list "--reset")))
+  (interactive "sImage name: \n")
+  (if (string= "" image)
+      (error "Run mojo-list-emulator-images to see what images are available")
+    (mojo-cmd "palm-emulator" (list "--reset" image))))
 
 (defun mojo-browse ()
   "Use `browse-url' to visit your application with Palm Host."
