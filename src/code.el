@@ -197,6 +197,12 @@ NAME is the name of the scene."
   (mojo-cmd-with-target "palm-launch" (list "-i" (mojo-read-app-id))))
 
 ;;* interactive
+(defun mojo-list-emulator-images ()
+  "Lists the emulator images"
+  (interactive)
+  (mojo-cmd "palm-emulator" (list "--list")))
+
+;;* interactive
 (defun mojo-hard-reset ()
   "Perform a hard reset, clearing all data."
   (interactive)
